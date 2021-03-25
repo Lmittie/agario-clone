@@ -4,8 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Food
   - Enemy
+  - Music
+  - Food
+  - food
   layers:
   - Default
   - TransparentFX

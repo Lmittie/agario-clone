@@ -15,8 +15,8 @@ public class EnemySpawnerScript : MonoBehaviour
             float randomScale = Random.Range(1.0f, 5.0f);
 
             randomVector.Set(
-                    Random.Range((100.0f - randomScale) * -1.0f, (100.0f - randomScale)),
-                    Random.Range((100.0f - randomScale) * -1.0f, (100.0f - randomScale))
+                    Random.Range((200.0f - randomScale) * -1.0f, (200.0f - randomScale)),
+                    Random.Range((200.0f - randomScale) * -1.0f, (200.0f - randomScale))
                 );
             Instantiate(enemy, randomVector, Quaternion.identity);
 
