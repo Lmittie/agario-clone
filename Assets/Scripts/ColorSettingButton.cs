@@ -14,6 +14,10 @@ public class ColorSettingButton : MonoBehaviour
     public void ChangeButtonColor(Color color)
     {
         GetComponent<Image>().color = color;
-        PlayerPrefs.SetString("ColorKey", ColorUtility.ToHtmlStringRGBA(color));
+    }
+
+    public void OnDestroy()
+    {
+        PlayerPrefs.SetString("ColorKey", ColorUtility.ToHtmlStringRGBA(GetComponent<Image>().color));
     }
 }

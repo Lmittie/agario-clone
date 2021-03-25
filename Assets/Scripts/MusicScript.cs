@@ -16,11 +16,6 @@ using UnityEngine;
         DontDestroyOnLoad(transform.gameObject);
         _audioSource = GetComponent<AudioSource>();
     }
-
-    public void AudioChangeState()
-    {
-        _audioSource.mute = !_audioSource.mute;
-    }
  
     public void PlayMusic()
     {
