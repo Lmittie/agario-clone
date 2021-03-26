@@ -51,6 +51,8 @@ public class AgarioPlayerController : AgarioBaseController
     {
         base.OnTriggerEnter2D(col);
         _cameraSize += 0.15f * col.transform.localScale.x;
+        _playerScore = Mathf.CeilToInt(mass);
+        playerScore.text = "Score: " + _playerScore;
     }
 
     private void SmoothCamera()
@@ -77,16 +79,6 @@ public class AgarioPlayerController : AgarioBaseController
         transform.DetachChildren();
         gameObject.SetActive(false);
         Invoke("BackToMainMenu", 4f);
-    }
-
-    protected override void OnObjectBigger(Collider2D col)
-    {
-        base.OnObjectBigger(col);
-        if (col.tag.Equals("Enemy"))
-        {
-            _playerScore += Mathf.CeilToInt(col.transform.localScale.x);
-            playerScore.text = "Score: " + _playerScore;
-        }
     }
 
     private void BackToMainMenu()

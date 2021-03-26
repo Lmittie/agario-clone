@@ -9,4 +9,13 @@ public class MenuControls : MonoBehaviour
     {
         SceneManager.LoadScene("Game");
     }
+
+    public void ExitPressed()
+    {
+        #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+        #else
+            Application.Quit();
+        #endif
+    }
 }
