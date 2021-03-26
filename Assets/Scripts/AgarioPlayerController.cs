@@ -11,7 +11,7 @@ public class AgarioPlayerController : AgarioBaseController
     public Text playerScore;
     private Vector2 _mousePosition;
     private float _cameraSize;
-    private float _speed = 1.3f;
+    private const float _speed = 1.3f;
     private string _playerName;
     private int _playerScore;
 

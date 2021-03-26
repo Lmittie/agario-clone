@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class GameControls : MonoBehaviour
 {
+    
     public void ExitPressed()
     {
         SceneManager.LoadScene("Menu");

@@ -13,7 +13,6 @@ public class Settings : MonoBehaviour
     {
         _audioSource = GameObject.FindGameObjectWithTag("Music").GetComponent<AudioSource>();
         float sliderValue = PlayerPrefs.GetFloat("sliderValue", 1.0f);
-        Debug.Log("slider is "  + sliderValue);
         Slider slider = GameObject.FindGameObjectWithTag("Slider").GetComponent<Slider>();
         slider.value = sliderValue;
     }
