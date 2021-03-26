@@ -5,8 +5,6 @@ using UnityEngine;
 public class AgarioEnemyController : AgarioBaseController
 {
     private FindClosest findClosest;
-    private List<GameObject> enemies;
-    private GameObject[] food;
     private Transform target;
     private float speed = 5f;
  
@@ -18,13 +16,6 @@ public class AgarioEnemyController : AgarioBaseController
     void Start()
     {
         mass = transform.localScale.x;
-
-        GameObject[] enemiesArray = GameObject.FindGameObjectsWithTag("Enemy");
-        // enemies = new List<GameObject>(enemiesArray);
-        // enemies.Add(GameObject.FindGameObjectWithTag("Player"));
-        // target = GetClosestEnemy();
-
-        food = GameObject.FindGameObjectsWithTag("Food");
     }
 
     // Update is called once per frame
@@ -38,46 +29,29 @@ public class AgarioEnemyController : AgarioBaseController
         {
             return;
         }
-        // enemies.RemoveAll(item => item == null);
-        // target = GetClosestEnemy();
 
         float step = speed * Time.deltaTime / mass;
         transform.position = Vector3.MoveTowards(transform.position, target.position, step);
     }
 
-    protected override void OnBiggerThenObject(Collider2D col)
+    protected override void OnEnemyBigger(Collider2D col)
     {
-        if (gameObject.tag.Equals("Enemy"))
-            mass = 1f;
-        GenerateObjInAnotherPlace(gameObject);
-    }
-
-    private Transform GetClosestEnemy()
-    {
-        Transform tMin = FindMinTransform(enemies.ToArray());
-        return tMin == null ? EatFood() : tMin;
-    }
-
-    private Transform EatFood()
-    {
-        return FindMinTransform(food);
-    }
-
-    private Transform FindMinTransform(GameObject[] objects)
-    {
-        Transform tMin = null;
-        float minDist = Mathf.Infinity;
-        Vector3 currentPos = transform.position;
-        foreach (GameObject obj in objects)
+        mass = 1f;
+        if (col.tag.Equals("Food"))
         {
-            float dist = Vector3.Distance(obj.transform.position, currentPos);
-            if (dist < minDist && obj.transform.localScale.x < transform.localScale.x)
-            {
-                tMin = obj.transform;
-                minDist = dist;
-            }
+            ChangeObjectScale(col.gameObject);
+            GenerateObjInAnotherPlace(gameObject);
         }
-        return tMin;
+    }
+
+    protected override void OnTriggerEnter2D(Collider2D col)
+    {
+        base.OnTriggerEnter2D(col);
+        if (col.tag.Equals("Player"))
+        {
+            if (col.transform.localScale.x < mass)
+                mass += col.gameObject.transform.localScale.x * MULT;
+        }
     }
 
 }

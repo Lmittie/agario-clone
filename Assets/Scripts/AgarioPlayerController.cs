@@ -2,34 +2,46 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class AgarioPlayerController : AgarioBaseController
 {
-    private Vector2 mousePosition;
     public Camera playerCamera;
-    private float cameraSize;
-    private float speed = 1.3f;
+    public Text playerName;
+    public Text playerScore;
+    private Vector2 _mousePosition;
+    private float _cameraSize;
+    private float _speed = 1.3f;
+    private string _playerName;
+    private int _playerScore;
 
     // Start is called before the first frame update
     void Start()
     {
-        cameraSize = 5;
-        playerCamera.orthographicSize = cameraSize;
+        _cameraSize = 5;
+        playerCamera.orthographicSize = _cameraSize;
 
         GameObject.FindGameObjectWithTag("Music").GetComponent<MusicScript>().PlayMusic();
 
+        _playerName = PlayerPrefs.GetString("playerName", "agar");
+        playerName.text = "Name: " + _playerName;
+        _playerScore = 0;
+        playerScore.text = "Score: " + _playerScore;
+
         Color color;
-        ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("ColorKey"), out color);
-        gameObject.GetComponent<SpriteRenderer>().color = color;
+        if (ColorUtility.TryParseHtmlString("#" + PlayerPrefs.GetString("ColorKey"), out color))
+            gameObject.GetComponent<SpriteRenderer>().color = color;
+        else
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f);
     }
 
     // Update is called once per frame
     void Update()
     {
-        mousePosition = Input.mousePosition;
-        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        mousePosition -= (Vector2)transform.position;
-        transform.Translate(mousePosition * Time.deltaTime * speed / mass);
+        _mousePosition = Input.mousePosition;
+        _mousePosition = Camera.main.ScreenToWorldPoint(_mousePosition);
+        _mousePosition -= (Vector2)transform.position;
+        transform.Translate(_mousePosition * Time.deltaTime * _speed / mass);
         Vector3 vectorScale = new Vector3(mass, mass, 1);
         transform.localScale = vectorScale;
         SmoothCamera();
@@ -38,25 +50,28 @@ public class AgarioPlayerController : AgarioBaseController
     protected override void OnTriggerEnter2D(Collider2D col)
     {
         base.OnTriggerEnter2D(col);
-        cameraSize += 0.15f * col.transform.localScale.x;
+        _cameraSize += 0.15f * col.transform.localScale.x;
     }
 
     private void SmoothCamera()
     {
-        if (playerCamera.orthographicSize > cameraSize) {
-            if (playerCamera.orthographicSize + 1 > cameraSize)
-                playerCamera.orthographicSize = cameraSize;
+        if (playerCamera.orthographicSize > _cameraSize)
+        {
+            if (playerCamera.orthographicSize + 1 > _cameraSize)
+                playerCamera.orthographicSize = _cameraSize;
             else
                 playerCamera.orthographicSize += 0.001f;
-        } else if (playerCamera.orthographicSize < cameraSize) {
-            if (playerCamera.orthographicSize - 1 < cameraSize)
-                playerCamera.orthographicSize = cameraSize;
+        }
+        else if (playerCamera.orthographicSize < _cameraSize)
+        {
+            if (playerCamera.orthographicSize - 1 < _cameraSize)
+                playerCamera.orthographicSize = _cameraSize;
             else
                 playerCamera.orthographicSize -= 0.001f;
         }
     }
 
-    protected override void OnBiggerThenObject(Collider2D col)
+    protected override void OnEnemyBigger(Collider2D col)
     {
         ChangeObjectScale(col.gameObject);
         transform.DetachChildren();
@@ -64,13 +79,14 @@ public class AgarioPlayerController : AgarioBaseController
         Invoke("BackToMainMenu", 4f);
     }
 
-    private void ChangeObjectScale(GameObject obj)
+    protected override void OnObjectBigger(Collider2D col)
     {
-        obj.transform.localScale = new Vector3(
-                    obj.transform.localScale.x + transform.localScale.x * MULT,
-                    obj.transform.localScale.y + transform.localScale.y * MULT,
-                    obj.transform.localScale.z
-                );
+        base.OnObjectBigger(col);
+        if (col.tag.Equals("Enemy"))
+        {
+            _playerScore += Mathf.CeilToInt(col.transform.localScale.x);
+            playerScore.text = "Score: " + _playerScore;
+        }
     }
 
     private void BackToMainMenu()

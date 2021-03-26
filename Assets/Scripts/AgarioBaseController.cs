@@ -14,19 +14,22 @@ public abstract class AgarioBaseController : MonoBehaviour
         {
             if (col.gameObject.transform.localScale.x > gameObject.transform.localScale.x)
             {
-                OnBiggerThenObject(col);
+                OnEnemyBigger(col);
             }
             else
             {
-                mass += col.gameObject.transform.localScale.x * MULT;
-                if (col.gameObject.tag.Equals("Enemy"))
-                    col.gameObject.transform.localScale = Vector3.one;
-                GenerateObjInAnotherPlace(col.gameObject);
+                OnObjectBigger(col);
             }
         }
     }
 
-    protected abstract void OnBiggerThenObject(Collider2D col);
+    protected abstract void OnEnemyBigger(Collider2D col);
+
+    protected virtual void OnObjectBigger(Collider2D col)
+    {
+        mass += col.gameObject.transform.localScale.x * MULT;
+        GenerateObjInAnotherPlace(col.gameObject);
+    }
 
     protected void GenerateObjInAnotherPlace(GameObject obj)
     {
@@ -36,5 +39,13 @@ public abstract class AgarioBaseController : MonoBehaviour
             Random.Range((200.0f - x) * -1.0f, (200.0f - x))
         );
         obj.transform.position = randomVector;
+    }
+    protected void ChangeObjectScale(GameObject obj)
+    {
+        obj.transform.localScale = new Vector3(
+                    obj.transform.localScale.x + mass * MULT,
+                    obj.transform.localScale.y + mass * MULT,
+                    obj.transform.localScale.z
+                );
     }
 }

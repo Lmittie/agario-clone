@@ -8,20 +8,20 @@ public class Settings : MonoBehaviour
 {
     public AudioMixer am;
     private AudioSource _audioSource;
-    private float _sliderValue;
 
     private void Start()
     {
         _audioSource = GameObject.FindGameObjectWithTag("Music").GetComponent<AudioSource>();
-        _sliderValue = PlayerPrefs.GetFloat("sliderValue", 0.5f);
+        float sliderValue = PlayerPrefs.GetFloat("sliderValue", 1.0f);
+        Debug.Log("slider is "  + sliderValue);
         Slider slider = GameObject.FindGameObjectWithTag("Slider").GetComponent<Slider>();
-        slider.value = _sliderValue;
+        slider.value = sliderValue;
     }
 
     public void AudioVolume(float sliderValue)
     {
         am.SetFloat("masterVolume", Mathf.Log10(sliderValue) * 20);
-        _sliderValue = sliderValue;
+        PlayerPrefs.SetFloat("sliderValue", sliderValue);
     }
 
     public void ChangeState()
@@ -29,8 +29,4 @@ public class Settings : MonoBehaviour
         _audioSource.mute = !_audioSource.mute;
     }
 
-    public void OnDestroy()
-    {
-        PlayerPrefs.SetFloat("sliderValue", _sliderValue);
-    }
 }

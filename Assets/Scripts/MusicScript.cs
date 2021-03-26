@@ -27,4 +27,9 @@ using UnityEngine;
     {
         _audioSource.Stop();
     }
+
+    void OnApplicationQuit()
+    {
+        PlayerPrefs.DeleteAll();
+    }
  }
